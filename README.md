@@ -17,7 +17,7 @@ This template uses .NET Core 3.0. If you're having trouble getting it to compile
 To install the `dotnet new` template, clone this repository locally and [install the template from a local directroy](https://docs.microsoft.com/en-us/dotnet/core/tools/custom-templates#to-install-a-template-from-a-file-system-directory).
 
 ```
-dotnet new -i MonoGame.WpfCore\
+dotnet new install MonoGame.WpfCore
 ```
 
 After the template is installed you should see it in the list. To create a new project, first create an empty directory then run the template.
