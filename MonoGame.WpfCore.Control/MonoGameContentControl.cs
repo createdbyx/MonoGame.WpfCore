@@ -27,21 +27,23 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SharpDX.Direct3D9;
+using Texture = SharpDX.Direct3D9.Texture;
 
 namespace MonoGame.WpfCore.MonoGameControls;
 
 public sealed class MonoGameContentControl : ContentControl, IDisposable
 {
-    private static readonly MonoGameGraphicsDeviceService _graphicsDeviceService = new MonoGameGraphicsDeviceService();
-    private int _instanceCount;
-    private IMonoGameViewModel _viewModel;
-    private readonly GameTime _gameTime = new GameTime();
-    private readonly Stopwatch _stopwatch = new Stopwatch();
+    private static readonly MonoGameGraphicsDeviceService _graphicsDeviceService = new();
+    private readonly GameTime _gameTime = new();
+    private readonly Stopwatch _stopwatch = new();
     private D3DImage _direct3DImage;
-    private RenderTarget2D _renderTarget;
-    private SharpDX.Direct3D9.Texture _renderTargetD3D9;
+    private int _instanceCount;
     private bool _isFirstLoad = true;
     private bool _isInitialized;
+    private RenderTarget2D _renderTarget;
+    private Texture _renderTargetD3D9;
+    private IMonoGameViewModel _viewModel;
 
     public MonoGameContentControl()
     {
@@ -57,26 +59,59 @@ public sealed class MonoGameContentControl : ContentControl, IDisposable
         {
             this._viewModel = args.NewValue as IMonoGameViewModel;
 
-            if (this._viewModel != null) this._viewModel.GraphicsDeviceService = _graphicsDeviceService;
+            if (this._viewModel != null)
+            {
+                this._viewModel.GraphicsDeviceService = _graphicsDeviceService;
+            }
         };
 
         this.SizeChanged += (sender, args) => this._viewModel?.SizeChanged(sender, args);
     }
 
-    public static GraphicsDevice GraphicsDevice => _graphicsDeviceService?.GraphicsDevice;
+    public static GraphicsDevice GraphicsDevice
+    {
+        get
+        {
+            return _graphicsDeviceService?.GraphicsDevice;
+        }
+    }
 
+    /// <summary>
+    /// Gets a value indicating whether the MonoGameContentControl has been disposed.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if this instance has been disposed; otherwise, <c>false</c>.
+    /// </value>
     public bool IsDisposed { get; private set; }
 
+    /// <summary>
+    /// Disposes the resources used by the <see cref="MonoGameContentControl"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method should be called to properly release any managed and unmanaged resources
+    /// held by the <see cref="MonoGameContentControl"/>. After calling this method, the
+    /// <see cref="MonoGameContentControl"/> should not be used.
+    /// </remarks>
     public void Dispose()
     {
         this.Dispose(true);
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// Disposes the resources used by the <see cref="MonoGameContentControl"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method should be called to properly release any managed and unmanaged resources
+    /// held by the <see cref="MonoGameContentControl"/>. After calling this method, the
+    /// <see cref="MonoGameContentControl"/> should not be used.
+    /// </remarks>
     private void Dispose(bool disposing)
     {
         if (this.IsDisposed)
+        {
             return;
+        }
 
         this._viewModel?.Dispose();
         this._renderTarget?.Dispose();
@@ -84,7 +119,9 @@ public sealed class MonoGameContentControl : ContentControl, IDisposable
         this._instanceCount--;
 
         if (this._instanceCount <= 0)
+        {
             _graphicsDeviceService?.Dispose();
+        }
 
         this.IsDisposed = true;
     }
@@ -119,13 +156,11 @@ public sealed class MonoGameContentControl : ContentControl, IDisposable
         }
 
         Application.Current.MainWindow.Closing += (sender, args) => this._viewModel?.OnExiting(this, EventArgs.Empty);
-        Application.Current.MainWindow.ContentRendered += OnMainWindowOnContentRendered;
+        Application.Current.MainWindow.ContentRendered += this.OnMainWindowOnContentRendered;
 
         this._direct3DImage = new D3DImage();
 
         this.AddChild(new Image { Source = this._direct3DImage, Stretch = Stretch.None });
-
-        //_direct3DImage.IsFrontBufferAvailableChanged += OnDirect3DImageIsFrontBufferAvailableChanged;
 
         this._renderTarget = this.CreateRenderTarget();
         CompositionTarget.Rendering += this.OnRender;
@@ -178,7 +213,9 @@ public sealed class MonoGameContentControl : ContentControl, IDisposable
     private void ResetBackBufferReference()
     {
         if (DesignerProperties.GetIsInDesignMode(this))
+        {
             return;
+        }
 
         if (this._renderTarget != null)
         {
@@ -203,10 +240,14 @@ public sealed class MonoGameContentControl : ContentControl, IDisposable
         var actualHeight = (int)this.ActualHeight;
 
         if (actualWidth == 0 || actualHeight == 0)
+        {
             return null;
+        }
 
         if (GraphicsDevice == null)
+        {
             return null;
+        }
 
         var renderTarget = new RenderTarget2D(GraphicsDevice, actualWidth, actualHeight,
                                               false, SurfaceFormat.Bgra32, DepthFormat.Depth24Stencil8, 1,
@@ -215,12 +256,14 @@ public sealed class MonoGameContentControl : ContentControl, IDisposable
         var handle = renderTarget.GetSharedHandle();
 
         if (handle == IntPtr.Zero)
+        {
             throw new ArgumentException("Handle could not be retrieved");
+        }
 
-        this._renderTargetD3D9 = new SharpDX.Direct3D9.Texture(_graphicsDeviceService.Direct3DDevice, renderTarget.Width,
-                                                               renderTarget.Height,
-                                                               1, SharpDX.Direct3D9.Usage.RenderTarget, SharpDX.Direct3D9.Format.A8R8G8B8,
-                                                               SharpDX.Direct3D9.Pool.Default, ref handle);
+        this._renderTargetD3D9 = new Texture(_graphicsDeviceService.Direct3DDevice, renderTarget.Width,
+                                             renderTarget.Height,
+                                             1, Usage.RenderTarget, Format.A8R8G8B8,
+                                             Pool.Default, ref handle);
 
         using (var surface = this._renderTargetD3D9.GetSurfaceLevel(0))
         {
@@ -238,31 +281,36 @@ public sealed class MonoGameContentControl : ContentControl, IDisposable
         this._gameTime.TotalGameTime += this._gameTime.ElapsedGameTime;
         this._stopwatch.Restart();
 
-        if (this.CanBeginDraw())
+        if (!this.CanBeginDraw())
         {
-            try
+            return;
+        }
+
+        try
+        {
+            this._direct3DImage.Lock();
+
+            if (this._renderTarget == null)
             {
-                this._direct3DImage.Lock();
-
-                if (this._renderTarget == null) this._renderTarget = this.CreateRenderTarget();
-
-                if (this._renderTarget != null)
-                {
-                    GraphicsDevice.SetRenderTarget(this._renderTarget);
-                    this.SetViewport();
-
-                    this._viewModel?.Update(this._gameTime);
-                    this._viewModel?.Draw(this._gameTime);
-
-                    GraphicsDevice.Flush();
-                    this._direct3DImage.AddDirtyRect(new Int32Rect(0, 0, (int)this.ActualWidth, (int)this.ActualHeight));
-                }
+                this._renderTarget = this.CreateRenderTarget();
             }
-            finally
+
+            if (this._renderTarget != null)
             {
-                this._direct3DImage.Unlock();
-                GraphicsDevice.SetRenderTarget(null);
+                GraphicsDevice.SetRenderTarget(this._renderTarget);
+                this.SetViewport();
+
+                this._viewModel?.Update(this._gameTime);
+                this._viewModel?.Draw(this._gameTime);
+
+                GraphicsDevice.Flush();
+                this._direct3DImage.AddDirtyRect(new Int32Rect(0, 0, (int)this.ActualWidth, (int)this.ActualHeight));
             }
+        }
+        finally
+        {
+            this._direct3DImage.Unlock();
+            GraphicsDevice.SetRenderTarget(null);
         }
     }
 
@@ -270,14 +318,20 @@ public sealed class MonoGameContentControl : ContentControl, IDisposable
     {
         // If we have no graphics device, we must be running in the designer.
         if (_graphicsDeviceService == null)
+        {
             return false;
+        }
 
         if (!this._direct3DImage.IsFrontBufferAvailable)
+        {
             return false;
+        }
 
         // Make sure the graphics device is big enough, and is not lost.
         if (!this.HandleDeviceReset())
+        {
             return false;
+        }
 
         return true;
     }
@@ -297,7 +351,9 @@ public sealed class MonoGameContentControl : ContentControl, IDisposable
     private bool HandleDeviceReset()
     {
         if (GraphicsDevice == null)
+        {
             return false;
+        }
 
         var deviceNeedsReset = false;
 
