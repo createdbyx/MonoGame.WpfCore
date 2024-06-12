@@ -15,4 +15,8 @@
     <ItemGroup>
         <MonoGameContentReference Include="**\*.mgcb"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MonoGame.WpfCore.Control\MonoGame.WpfCore.Control.csproj" />
+    </ItemGroup>
 </Project>

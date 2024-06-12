@@ -4,15 +4,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:monoGameControls="clr-namespace:MonoGame.WpfCore.MonoGameControls"
-    xmlns:local="clr-namespace:MonoGame.WpfCore"
+    xmlns:wpfCore="clr-namespace:MonoGame.WpfCore"
+    xmlns:monoGameControls="clr-namespace:MonoGame.WpfCore.MonoGameControls;assembly=MonoGame.WpfCore.Control"
     mc:Ignorable="d"
     Title="MonoGame.WpfCore"
     WindowStartupLocation="CenterScreen"
     Width="800"
     Height="480">
     <Window.DataContext>
-        <local:MainWindowViewModel />
+        <wpfCore:MainWindowViewModel />
     </Window.DataContext>
 
     <DockPanel LastChildFill="True">
