@@ -14,11 +14,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
-      <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
+        <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303"/>
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
 </Project>
