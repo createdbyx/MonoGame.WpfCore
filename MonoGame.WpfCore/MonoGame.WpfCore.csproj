@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <UseWPF>true</UseWPF>
-    <LangVersion>default</LangVersion>
-    <Nullable>enable</Nullable>
-    <TargetFrameworks>net6.0-windows;net8.0-windows</TargetFrameworks>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <UseWPF>true</UseWPF>
+        <LangVersion>default</LangVersion>
+        <Nullable>enable</Nullable>
+        <TargetFrameworks>net6.0-windows;net8.0-windows</TargetFrameworks>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <MonoGameContentReference Include="**\*.mgcb" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303"/>
+        <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <MonoGameContentReference Include="**\*.mgcb"/>
+    </ItemGroup>
 </Project>
