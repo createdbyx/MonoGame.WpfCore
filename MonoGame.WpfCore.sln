@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.WpfCore", "MonoGame.WpfCore\MonoGame.WpfCore.csproj", "{FD990210-B23B-44A8-A99D-7ECDD653E4CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.WpfCore.Control", "MonoGame.WpfCore.Control\MonoGame.WpfCore.Control.csproj", "{D15C871B-C957-4AB9-A485-5940605AD080}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{FD990210-B23B-44A8-A99D-7ECDD653E4CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD990210-B23B-44A8-A99D-7ECDD653E4CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD990210-B23B-44A8-A99D-7ECDD653E4CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D15C871B-C957-4AB9-A485-5940605AD080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D15C871B-C957-4AB9-A485-5940605AD080}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D15C871B-C957-4AB9-A485-5940605AD080}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D15C871B-C957-4AB9-A485-5940605AD080}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

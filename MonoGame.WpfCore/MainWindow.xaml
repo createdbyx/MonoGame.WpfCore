@@ -42,6 +42,6 @@
             </MenuItem>
         </Menu>
 
-        <monoGameControls:MonoGameContentControl />
+        <monoGameControls:MonoGameContentControl  />
     </DockPanel>
 </Window>
